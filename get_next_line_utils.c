@@ -71,7 +71,7 @@ char	*ft_strjoin(char *s1, char const *s2)
 	char	*res;
 
 	if (!s2)
-		return (NULL);
+		return (s1);
 	if (s1)
 		res_len = -~(ft_strlen(s1) + ft_linelen(s2));
 	else

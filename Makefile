@@ -6,7 +6,7 @@
 #    By: vlepille <vlepille@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/21 02:24:43 by marvin            #+#    #+#              #
-#    Updated: 2022/11/23 03:57:56 by vlepille         ###   ########.fr        #
+#    Updated: 2022/11/23 10:03:39 by vlepille         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ $(NAME) : $(OBJ)
 	cc $(OBJ) -o $(NAME) -g3
 
 %.o : %.c
-	$(CC) $(FLAGS) $(INCLUDES) -D BUFFER_SIZE=10 -c $< -o $@ -g3
+	$(CC) $(FLAGS) $(INCLUDES) -D BUFFER_SIZE=1 -c $< -o $@ -g3
 
 all : $(NAME)
 

@@ -5,10 +5,6 @@
 
 #define BUFFER_COUNT 20
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 5
-#endif
-
 typedef struct s_file_reader
 {
 	int		line_counter;

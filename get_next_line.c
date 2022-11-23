@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include "get_next_line.h"
 
-char	*get_line_offset(t_file_reader *buffs, int fd)
+char	*get_line_offset(t_file_reader *buffs, int fd, int *end)
 {
 	int	line_count;
 	int	i;
@@ -20,8 +20,10 @@ char	*get_line_offset(t_file_reader *buffs, int fd)
 	}
 	read_result = read(fd, buffs[fd].str, BUFFER_SIZE);
 	if (read_result <= 0 || buffs[fd].line_counter == -1)
-		return (NULL);
-	buffs[fd].line_counter = (read_result == BUFFER_SIZE) - 1;
+		return ((*end = 1, NULL));
+	buffs[fd].line_counter = 0;
+	if (read_result != BUFFER_SIZE)
+		buffs[fd].str[read_result] = 0;
 	return (buffs[fd].str);
 }
 
@@ -29,15 +31,19 @@ char	*get_next_line(int fd)
 {
 	static t_file_reader	buffs[BUFFER_COUNT];
 	char					*res;
+	int						end;
 
 	res = NULL;
+	end = 0;
 	while (buffs[fd].line_counter != -1
 		&& (!res || !*buffs[fd].str || res[~ -ft_strlen(res)] != '\n'))
 	{
-		res = ft_strjoin(res, get_line_offset(buffs, fd));
+		res = ft_strjoin(res, get_line_offset(buffs, fd, &end));
+		if (end)
+			buffs[fd].line_counter = -2;
 		if (!res)
 			return (NULL);
-		buffs[fd].line_counter += buffs[fd].line_counter != -1;
+		buffs[fd].line_counter++;
 	}
 	return (res);
 }

@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 int main(void)
 {
@@ -12,11 +13,11 @@ int main(void)
 	if (!fd)
 		return (1);
 
-	// @TODO test whith i < 10 to test last line and to many lines
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		line = get_next_line(fd);
 		printf("%s", line);
+		free(line);
 	}
 
 	close(fd);

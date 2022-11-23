@@ -6,7 +6,7 @@
 #    By: vlepille <vlepille@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/10/21 02:24:43 by marvin            #+#    #+#              #
-#    Updated: 2022/11/19 18:21:09 by vlepille         ###   ########.fr        #
+#    Updated: 2022/11/23 03:57:56 by vlepille         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,10 +27,10 @@ OBJ = ${SRC:.c=.o}
 RM = rm -f
 
 $(NAME) : $(OBJ)
-	cc -D BUFFER_SIZE=42 $(OBJ) -o $(NAME)
+	cc $(OBJ) -o $(NAME) -g3
 
 %.o : %.c
-	$(CC) $(FLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(FLAGS) $(INCLUDES) -D BUFFER_SIZE=10 -c $< -o $@ -g3
 
 all : $(NAME)
 

@@ -6,13 +6,21 @@
 /*   By: vlepille <vlepille@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/25 17:52:39 by vlepille          #+#    #+#             */
-/*   Updated: 2022/11/25 18:45:18 by vlepille         ###   ########.fr       */
+/*   Updated: 2022/11/25 19:21:02 by vlepille         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include <unistd.h>
 #include "get_next_line.h"
+
+void	create_buffer_string(t_file_reader *buffs, int fd)
+{
+	if (!buffs[fd].str)
+		buffs[fd].str = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (buffs[fd].str)
+		buffs[fd].str[BUFFER_SIZE] = 0;
+}
 
 char	*get_line_offset(t_file_reader *buffs, int fd, int *end)
 {
@@ -31,8 +39,9 @@ char	*get_line_offset(t_file_reader *buffs, int fd, int *end)
 		i++;
 	}
 	if (!buffs[fd].str)
-		buffs[fd].str = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	buffs[fd].str[BUFFER_SIZE] = 0;
+		create_buffer_string(buffs, fd);
+	if (!buffs[fd].str)
+		return (NULL);
 	read_result = read(fd, buffs[fd].str, BUFFER_SIZE);
 	if (read_result <= 0 || buffs[fd].line_counter == -1)
 		return (*end = 1, NULL);

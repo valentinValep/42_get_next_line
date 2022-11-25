@@ -3,8 +3,6 @@
 
 #include <stddef.h>
 
-#define BUFFER_COUNT 20
-
 typedef struct s_file_reader
 {
 	int		line_counter;

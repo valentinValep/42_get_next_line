@@ -29,7 +29,7 @@ char	*get_line_offset(t_file_reader *buffs, int fd, int *end)
 
 char	*get_next_line(int fd)
 {
-	static t_file_reader	buffs[BUFFER_COUNT];
+	static t_file_reader	buffs[1024];
 	char					*res;
 	int						end;
 

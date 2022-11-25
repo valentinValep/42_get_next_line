@@ -1,12 +1,12 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-#include <stddef.h>
+# include <stddef.h>
 
 typedef struct s_file_reader
 {
 	int		line_counter;
-	char	str[BUFFER_SIZE + 1];
+	char	*str;
 }	t_file_reader;
 
 char	*get_next_line(int fd);

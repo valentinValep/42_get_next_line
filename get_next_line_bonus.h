@@ -6,12 +6,12 @@
 /*   By: vlepille <vlepille@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 16:11:51 by vlepille          #+#    #+#             */
-/*   Updated: 2022/11/29 16:11:51 by vlepille         ###   ########.fr       */
+/*   Updated: 2022/11/29 17:28:35 by vlepille         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 typedef struct s_file_reader
 {

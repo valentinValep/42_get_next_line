@@ -38,7 +38,7 @@ int	ft_line_join(t_string *res, t_file_reader *buff)
 		return (1);
 	ft_upscale_str(res, res->strlen + buff->strlen + 1);
 	if (!res->str)
-		return (0);
+		return ((buff->strlen = -1, 0));
 	i = -1;
 	while (++i < buff->strlen)
 		res->str[i + res->strlen] = buff->str[i + buff->line_offset];

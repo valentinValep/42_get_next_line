@@ -45,6 +45,8 @@ int	ft_line_join(t_string *res, t_file_reader *buff)
 		+ buff->strlen) % (BUFFER_SIZE + !BUFFER_SIZE);
 	res->strlen = res->strlen + buff->strlen;
 	res->str[res->strlen] = 0;
+	if (buff->line_offset && !buff->str[buff->line_offset])
+		buff->strlen = - 1;
 	return (0);
 }
 
@@ -63,15 +65,12 @@ t_file_reader	*ft_line_rest(t_file_reader *buff, int fd)
 		if (read_result <= 0)
 			return (NULL);
 		if (read_result != BUFFER_SIZE)
-		{
 			buff->str[read_result] = 0;
-			buff->strlen = read_result;
-			return (buff);
-		}
 	}
 	buff->strlen = 0;
-	while (buff->str[buff->strlen + buff->line_offset] != '\n' // bug with newline at the EOF
-		&& buff->strlen + buff->line_offset < BUFFER_SIZE - 1)
+	while (buff->strlen + buff->line_offset < BUFFER_SIZE - 1
+		&& buff->str[buff->strlen + buff->line_offset + 1]
+		&& buff->str[buff->strlen + buff->line_offset] != '\n')
 		buff->strlen++;
 	buff->strlen++;
 	return (buff);
@@ -86,19 +85,20 @@ char	*get_next_line(int fd)
 	res.str = NULL;
 	res.strlen = 0;
 	res.malloc_size = 0;
-	while (buffs[fd].strlen != -1
+	while (buffs[fd].strlen >= 0
 		&& (!res.str || res.str[res.strlen - 1] != '\n'))
 	{
 		if (!ft_line_rest(buffs + fd, fd))
 		{
 			if (buffs[fd].strlen != -1 && (res.str && (free(res.str), 1)))
 				return (NULL);
-			free(buffs[fd].str);
-			return (res.str);
+			break ;
 		}
 		join_value = ft_line_join(&res, buffs + fd);
 		if (join_value)
 			return (NULL);
 	}
+	if (buffs[fd].strlen == -1 && (buffs[fd].strlen--, 1))
+		free(buffs[fd].str);
 	return (res.str);
 }

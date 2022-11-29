@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <unistd.h>
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /*
 Upscale the size of the string memory allocation to correspond with size

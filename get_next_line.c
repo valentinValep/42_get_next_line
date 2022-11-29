@@ -2,17 +2,6 @@
 #include <unistd.h>
 #include "get_next_line.h"
 
-//#include <stdio.h>
-//char	*test_malloc(size_t size, int id, int fail_iter)
-//{
-//	static int	iters[10];
-
-//	printf("Test malloc : id=%d iter=%d fail=%d\n", id, iters[id], fail_iter);
-//	if (iters[id]++ >= fail_iter)
-//		return (NULL);
-//	return (malloc(size));
-//}
-
 /*
 Upscale the size of the string memory allocation to correspond with size
 */
@@ -54,11 +43,11 @@ int	ft_line_join(t_string *res, t_file_reader *buff)
 	while (++i < buff->strlen)
 		res->str[i + res->strlen] = buff->str[i + buff->line_offset];
 	buff->line_offset = (buff->line_offset
-		+ buff->strlen) % (BUFFER_SIZE + !BUFFER_SIZE);
+			+ buff->strlen) % (BUFFER_SIZE + !BUFFER_SIZE);
 	res->strlen = res->strlen + buff->strlen;
 	res->str[res->strlen] = 0;
 	if (buff->line_offset && !buff->str[buff->line_offset])
-		buff->strlen = - 1;
+		buff->strlen = -1;
 	return (0);
 }
 
@@ -70,7 +59,7 @@ t_file_reader	*ft_line_rest(t_file_reader *buff, int fd)
 		buff->str = malloc(BUFFER_SIZE);
 	if (!buff->str)
 		return (NULL);
-	if (!buff->line_offset || buff->line_offset == BUFFER_SIZE)
+	if (!buff->line_offset)
 	{
 		read_result = read(fd, buff->str, BUFFER_SIZE);
 		buff->strlen = -1;

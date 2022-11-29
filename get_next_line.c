@@ -14,60 +14,104 @@
 #include <unistd.h>
 #include "get_next_line.h"
 
-void	create_buffer_string(t_file_reader *buffs, int fd)
+/*
+Upscale the size of the string memory allocation to correspond with size
+*/
+void	ft_upscale_str(t_string *str, int size)
 {
-	if (!buffs[fd].str)
-		buffs[fd].str = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (buffs[fd].str)
-		buffs[fd].str[BUFFER_SIZE] = 0;
+	char	*new;
+	int		i;
+
+	if (str->malloc_size >= size)
+		return ;
+	while (str->malloc_size < size)
+		str->malloc_size = str->malloc_size * 2 + (!str->malloc_size);
+	new = malloc((str->malloc_size) * sizeof(char));
+	if (!new)
+	{
+		if (str->str)
+			free(str->str);
+		str->str = NULL;
+		return ;
+	}
+	i = -1;
+	while (++i < str->strlen)
+		new[i] = str->str[i];
+	new[i] = 0;
+	free(str->str);
+	str->str = new;
 }
 
-char	*get_line_offset(t_file_reader *buffs, int fd, int *end)
+int	ft_line_join(t_string *res, t_file_reader *buff)
 {
-	int	line_count;
 	int	i;
+
+	if (!buff)
+		return (1);
+	ft_upscale_str(res, res->strlen + buff->strlen + 1);
+	if (!res->str)
+		return ((buff->strlen = -1, 0));
+	i = -1;
+	while (++i < buff->strlen)
+		res->str[i + res->strlen] = buff->str[i + buff->line_offset];
+	buff->line_offset = (buff->line_offset
+			+ buff->strlen) % (BUFFER_SIZE + !BUFFER_SIZE);
+	res->strlen = res->strlen + buff->strlen;
+	res->str[res->strlen] = 0;
+	if (buff->line_offset && !buff->str[buff->line_offset])
+		buff->strlen = -1;
+	return (0);
+}
+
+t_file_reader	*ft_line_rest(t_file_reader *buff, int fd)
+{
 	int	read_result;
 
-	line_count = 0;
-	i = 0;
-	while (buffs[fd].str && buffs[fd].str[i])
-	{
-		if (line_count == buffs[fd].line_counter)
-			return (buffs[fd].str + i);
-		if (buffs[fd].str[i] == '\n')
-			line_count++;
-		i++;
-	}
-	if (!buffs[fd].str)
-		create_buffer_string(buffs, fd);
-	if (!buffs[fd].str)
+	if (!buff->str)
+		buff->str = malloc(BUFFER_SIZE);
+	if (!buff->str)
 		return (NULL);
-	read_result = read(fd, buffs[fd].str, BUFFER_SIZE);
-	if (read_result <= 0 || buffs[fd].line_counter == -1)
-		return (*end = 1, NULL);
-	buffs[fd].line_counter = 0;
-	if (read_result != BUFFER_SIZE)
-		buffs[fd].str[read_result] = 0;
-	return (buffs[fd].str);
+	if (!buff->line_offset)
+	{
+		read_result = read(fd, buff->str, BUFFER_SIZE);
+		buff->strlen = -1;
+		if (read_result <= 0)
+			return (NULL);
+		if (read_result != BUFFER_SIZE)
+			buff->str[read_result] = 0;
+	}
+	buff->strlen = 0;
+	while (buff->strlen + buff->line_offset < BUFFER_SIZE - 1
+		&& buff->str[buff->strlen + buff->line_offset + 1]
+		&& buff->str[buff->strlen + buff->line_offset] != '\n')
+		buff->strlen++;
+	buff->strlen++;
+	return (buff);
 }
 
 char	*get_next_line(int fd)
 {
 	static t_file_reader	buffs[1024];
-	char					*res;
-	int						end;
+	t_string				res;
 
-	res = NULL;
-	end = 0;
-	while (buffs[fd].line_counter > -1
-		&& (!res || !*buffs[fd].str || res[~ -ft_strlen(res)] != '\n'))
+	if (fd < 0 || fd >= 1024)
+		return (NULL);
+	res.str = NULL;
+	res.strlen = 0;
+	res.malloc_size = 0;
+	while (buffs[fd].strlen >= 0
+		&& (!res.str || res.str[res.strlen - 1] != '\n'))
 	{
-		res = ft_strjoin(res, get_line_offset(buffs, fd, &end));
-		if (end && (free(buffs[fd].str), 1))
-			buffs[fd].line_counter = -2;
-		if (!res)
+		if (!ft_line_rest(buffs + fd, fd))
+		{
+			if (buffs[fd].strlen != -1 && (res.str && (free(res.str), 1)))
+				return (NULL);
+			break ;
+		}
+		if (ft_line_join(&res, buffs + fd))
 			return (NULL);
-		buffs[fd].line_counter++;
 	}
-	return (res);
+	if (buffs[fd].strlen == -1 && (buffs[fd].strlen--, 1))
+		free(buffs[fd].str);
+	return (res.str);
 }

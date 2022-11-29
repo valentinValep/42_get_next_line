@@ -72,4 +72,12 @@ int main(void)
 	close(fd4);
 	close(fd5);
 	close(fd6);
+
+	printf("ALLO\n");
+	line = get_next_line(-3);
+	printf("ALLO\n");
+	line = get_next_line(20000);
+	printf("ALLO\n");
+	line = get_next_line(-42);
+	printf("ALLO\n");
 }

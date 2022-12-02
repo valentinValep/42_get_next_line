@@ -16,3 +16,9 @@ valgrind --track-origins=yes ./exec8
 echo "Testing with 42"
 gcc -Wall -Werror -Wextra get_next_line.c get_next_line_utils.c get_next_line.h main.c -I. -D BUFFER_SIZE=42 -o exec42 -g3
 valgrind --track-origins=yes ./exec42
+echo "Testing with -42"
+gcc -Wall -Werror -Wextra get_next_line.c get_next_line_utils.c get_next_line.h main.c -I. -D BUFFER_SIZE=-42 -o execm42 -g3
+valgrind --track-origins=yes ./execm42
+echo "Testing without BUFFER_SIZE"
+gcc -Wall -Werror -Wextra get_next_line.c get_next_line_utils.c get_next_line.h main.c -I. -o execno -g3
+valgrind --track-origins=yes ./execno
